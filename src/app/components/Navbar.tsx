@@ -18,18 +18,18 @@ import Cart from "./Cart";
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isCartOpen, setIsCartOpen] = React.useState(false);
-
+  const [cartItems, setCartItems] = React.useState([2, 2, 2]);
   const handleClose = () => setMobileOpen(false);
 
   return (
-    <div className="bg-white shadow-md p-4">
+    <div className="bg-black shadow-md p-4">
       <div className="container mx-auto flex items-center justify-between gap-4 flex-wrap">
         {/* Logo / Title */}
         <Link
           href="/"
           className="text-xl font-bold text-green-700 whitespace-nowrap"
         >
-          Aroma-Bangla
+          Aroma- <span className="text-[#FFD700]">Bangla</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -91,9 +91,18 @@ const Navbar = () => {
 
         {/* Cart + Mobile Menu Button */}
         <div className="flex items-center gap-4">
-          <button onClick={() => setIsCartOpen(true)}>
-            <ShoppingCartIcon className="text-2xl" />
-          </button>
+          <div className="relative">
+            <button onClick={() => setIsCartOpen(true)}>
+              <ShoppingCartIcon className="text-3xl text-white" />
+              {/* Cart item count badge */}
+              {cartItems.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartItems.length}
+                </span>
+              )}
+            </button>
+          </div>
+
           {/* Mobile Menu Toggle */}
           <button onClick={() => setMobileOpen(true)} className="md:hidden p-2">
             <Menu className="w-6 h-6" />

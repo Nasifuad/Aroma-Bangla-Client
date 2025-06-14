@@ -1,60 +1,19 @@
-"use client"; // <-- This makes the component client-side
+import { GalleryVerticalEnd } from "lucide-react";
 
-import { useState } from "react";
+import { LoginForm } from "@/components/ui/login-form";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password) {
-      setError("Please fill in both fields.");
-      return;
-    }
-
-    setError("");
-    // TODO: Add your login logic here, e.g. call API
-    alert(`Logging in with email: ${email}`);
-  };
-
   return (
-    <main style={{ maxWidth: "400px", margin: "auto", padding: "2rem" }}>
-      <h1>Login</h1>
-
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-      >
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ padding: "0.5rem", fontSize: "1rem" }}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={{ padding: "0.5rem", fontSize: "1rem" }}
-        />
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
-        <button
-          type="submit"
-          style={{ padding: "0.75rem", fontSize: "1rem", cursor: "pointer" }}
-        >
-          Log In
-        </button>
-      </form>
-    </main>
+    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        <a href="#" className="flex items-center gap-2 self-center font-medium">
+          <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
+            <GalleryVerticalEnd className="size-4" />
+          </div>
+          Acme Inc.
+        </a>
+        <LoginForm />
+      </div>
+    </div>
   );
 }

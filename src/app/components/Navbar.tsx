@@ -18,11 +18,11 @@ import Cart from "./Cart";
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isCartOpen, setIsCartOpen] = React.useState(false);
-  const [cartItems, setCartItems] = React.useState([2, 2, 2]);
+  const [cartItems] = React.useState([2, 2, 2]);
   const handleClose = () => setMobileOpen(false);
 
   return (
-    <div className="bg-black shadow-md p-4">
+    <div className="bg-white shadow-md p-4">
       <div className="container mx-auto flex items-center justify-between gap-4 flex-wrap">
         {/* Logo / Title */}
         <Link
@@ -93,7 +93,7 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           <div className="relative">
             <button onClick={() => setIsCartOpen(true)}>
-              <ShoppingCartIcon className="text-3xl text-white" />
+              <ShoppingCartIcon className="text-3xl " />
               {/* Cart item count badge */}
               {cartItems.length > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">

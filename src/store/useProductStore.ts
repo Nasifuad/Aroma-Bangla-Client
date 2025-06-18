@@ -52,6 +52,7 @@ export const useProductStore = create<ProductStore>((set) => ({
       set({ isFetching: true });
       const response = await fetch(`${apiUrl}/${id}`);
       const data = await response.json();
+      console.log("Fetched product by ID:", data);
       set({ specificProduct: data.data, isFetching: false });
     } catch (error) {
       console.log(error);

@@ -14,12 +14,16 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Input } from "@/components/ui/input";
 import Cart from "./Cart";
+import { useProductStore } from "@/store/useProductStore";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isCartOpen, setIsCartOpen] = React.useState(false);
-  const [cartItems] = React.useState([2, 2, 2]);
   const handleClose = () => setMobileOpen(false);
+  const { cartItems } = useProductStore();
+
+  // Calculate total items in cart
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="bg-white shadow-md p-4">
@@ -50,7 +54,7 @@ const Navbar = () => {
                 <ul className="grid w-[300px] gap-2 p-2">
                   <li>
                     <Link
-                      href="/category/coffee"
+                      href="/product"
                       className="block px-2 py-1 hover:bg-gray-100 rounded"
                     >
                       Coffee
@@ -93,11 +97,11 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           <div className="relative">
             <button onClick={() => setIsCartOpen(true)}>
-              <ShoppingCartIcon className="text-3xl " />
+              <ShoppingCartIcon className="text-3xl" />
               {/* Cart item count badge */}
-              {cartItems.length > 0 && (
+              {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartItems.length}
+                  {totalItems}
                 </span>
               )}
             </button>

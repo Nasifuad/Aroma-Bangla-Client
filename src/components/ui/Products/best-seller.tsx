@@ -1,96 +1,101 @@
 "use client";
-import React from "react";
-import Image from "next/image";
+import React, { useEffect } from "react";
+import { useProductStore } from "@/store/useProductStore";
+import { motion } from "framer-motion";
+import { CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 interface Product {
-  id: number;
+  _id: string;
   name: string;
-  price: string;
-  image: string;
-  description: string;
+  price: number;
+  image_small: string;
 }
 
-const coffeeProducts: Product[] = [
-  {
-    id: 1,
-    name: "Espresso",
-    price: "$2.99",
-    image: "/images/coffee/espresso.jpg",
-    description: "Rich and bold shot of pure coffee flavor.",
-  },
-  {
-    id: 2,
-    name: "Cappuccino",
-    price: "$3.99",
-    image: "/images/coffee/cappuccino.jpg",
-    description: "Espresso topped with steamed milk foam.",
-  },
-  {
-    id: 3,
-    name: "Latte",
-    price: "$4.49",
-    image: "/images/coffee/latte.jpg",
-    description: "Smooth blend of espresso and steamed milk.",
-  },
-  {
-    id: 4,
-    name: "Americano",
-    price: "$3.49",
-    image: "/images/coffee/americano.jpg",
-    description: "Espresso diluted with hot water for a clean taste.",
-  },
-  {
-    id: 5,
-    name: "Mocha",
-    price: "$4.99",
-    image: "/images/coffee/mocha.jpg",
-    description: "Chocolate-infused latte topped with whipped cream.",
-  },
-  {
-    id: 6,
-    name: "Flat White",
-    price: "$3.99",
-    image: "/images/coffee/flatwhite.jpg",
-    description: "Velvety microfoam over a double shot of espresso.",
-  },
-];
+const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+  const [quantity, setQuantity] = React.useState(1);
+  const { addToCart } = useProductStore();
+
+  const increment = () => setQuantity((prev) => prev + 1);
+  const decrement = () => setQuantity((prev) => Math.max(1, prev - 1));
+
+  const handleAddToCart = () => {
+    addToCart(product, quantity);
+  };
+
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow bg-white"
+    >
+      <Link href={`/product/${product._id}`}>
+        <motion.img
+          src={product.image_small}
+          alt={product.name}
+          className="w-full h-56 object-cover"
+          whileHover={{ y: -5 }}
+        />
+      </Link>
+      <CardContent className="p-4 space-y-2">
+        <Link
+          href={`/product/${product._id}`}
+          className="block text-xl font-bold hover:underline text-gray-900"
+        >
+          {product.name}
+        </Link>
+        <div className="flex items-center justify-between">
+          <span className="text-lg font-semibold text-indigo-600">
+            ${product.price.toFixed(2)}
+          </span>
+          <Badge variant="outline">Best Seller</Badge>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={decrement}
+            aria-label="Decrease quantity"
+          >
+            -
+          </Button>
+          <span className="font-medium">{quantity}</span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={increment}
+            aria-label="Increase quantity"
+          >
+            +
+          </Button>
+        </div>
+      </CardContent>
+      <CardFooter className="p-4">
+        <Button className="w-full" onClick={handleAddToCart}>
+          Add to Cart
+        </Button>
+      </CardFooter>
+    </motion.div>
+  );
+};
 
 const BestSeller: React.FC = () => {
+  const { products, getProduct } = useProductStore();
+
+  useEffect(() => {
+    getProduct();
+  }, [getProduct]);
+
   return (
-    <section className="bg-white py-16">
-      <div className="container mx-auto px-4">
-        <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
-          Best Sellers
+    <section className="bg-gray-50 py-20">
+      <div className="max-w-7xl mx-auto px-6">
+        <h2 className="text-5xl font-extrabold text-center text-gray-800 mb-12">
+          Our Best Sellers
         </h2>
-        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {coffeeProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-gray-50 rounded-lg shadow hover:shadow-lg transition p-6 flex flex-col"
-            >
-              <div className="relative w-full h-48 mb-4">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover rounded"
-                />
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-800">
-                {product.name}
-              </h3>
-              <p className="text-sm text-gray-600 flex-1">
-                {product.description}
-              </p>
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-lg font-bold text-green-700">
-                  {product.price}
-                </span>
-                <button className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded hover:bg-green-700 focus:outline-none">
-                  Order Now
-                </button>
-              </div>
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {products.map((product: Product) => (
+            <ProductCard key={product._id} product={product} />
           ))}
         </div>
       </div>

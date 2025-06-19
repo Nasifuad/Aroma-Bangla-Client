@@ -11,7 +11,10 @@ interface Product {
   name: string;
   price: number;
   image_small: string;
+  discount?: number;
   category?: string;
+  brand?: string;
+  description?: string;
 }
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
@@ -52,7 +55,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
         <div className="flex items-center justify-between">
           <span className="text-xl font-bold text-gray-900">
-            ${product.price.toFixed(2)}
+            {product.price.toFixed(2)}/-
           </span>
           <div className="flex items-center space-x-1">
             {[...Array(5)].map((_, i) => (

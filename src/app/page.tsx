@@ -1,6 +1,6 @@
 import Footer from "@/components/ui/footer";
-import BestSeller from "@/components/ui/Products/best-seller";
-import HeroSection from "@/components/ui/Products/hero";
+import BestSeller from "@/app/components/Products/best-seller";
+import HeroSection from "@/app/components/Products/hero";
 
 export default function Home() {
   return (

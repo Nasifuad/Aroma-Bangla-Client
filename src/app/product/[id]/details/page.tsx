@@ -9,7 +9,7 @@ import {
   HeartIcon,
   ChevronLeftIcon,
 } from "@heroicons/react/24/solid";
-import BestSeller from "@/components/ui/Products/best-seller";
+import BestSeller from "@/app/components/Products/best-seller";
 
 export default function ProductDetails() {
   const { specificProduct, isFetching, addToCart } = useProductStore();

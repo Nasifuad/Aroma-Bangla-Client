@@ -1,5 +1,5 @@
 import Footer from "@/components/ui/footer";
-import BestSeller from "@/components/ui/Products/best-seller";
+import BestSeller from "@/app/components/Products/best-seller";
 import React from "react";
 
 const Product = () => {

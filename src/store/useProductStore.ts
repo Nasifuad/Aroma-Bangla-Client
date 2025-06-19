@@ -1,33 +1,7 @@
 import { create } from "zustand";
+import type { ProductStore, NewProductInput } from "./interface";
 
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  image_small: string;
-}
-
-interface CartItem {
-  product: Product;
-  quantity: number;
-}
-
-interface ProductStore {
-  products: Product[];
-  specificProduct?: Product;
-  isFetching: boolean;
-  cartItems: CartItem[];
-  cartCount: number;
-  setProducts: (products: Product[]) => void;
-  getProduct: () => Promise<void>;
-  getProductById: (id: string) => Promise<void>;
-  addToCart: (product: Product, quantity: number) => void;
-  removeFromCart: (productId: string) => void;
-  incrementCartItem: (productId: string) => void;
-  decrementCartItem: (productId: string) => void;
-}
-
-const apiUrl = "https://yelp-khoh.onrender.com/api/product";
+const apiUrl = "http://localhost:3030/api/product";
 
 export const useProductStore = create<ProductStore>((set) => ({
   products: [],
@@ -100,4 +74,32 @@ export const useProductStore = create<ProductStore>((set) => ({
           : item
       ),
     })),
+  addProduct: async (product: NewProductInput) => {
+    try {
+      const formData = new FormData();
+      console.log("Adding product with data:", product);
+      // Add text fields
+      Object.entries(product).forEach(([key, value]) => {
+        if (key !== "image_small" && key !== "image_big") {
+          formData.append(key, value);
+        }
+      });
+
+      // Add image files
+      product.image_small.forEach((file) =>
+        formData.append("image_small", file)
+      );
+      product.image_big.forEach((file) => formData.append("image_big", file));
+
+      const response = await fetch(`${apiUrl}/addProduct`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      console.log("✅ Product added successfully:", data);
+    } catch (error) {
+      console.error("❌ Error adding product:", error);
+    }
+  },
 }));

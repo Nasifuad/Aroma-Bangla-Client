@@ -51,6 +51,7 @@ const Navbar = () => {
             <NavLink href="/product">Coffee</NavLink>
             <NavLink href="/category/machines">Machines</NavLink>
             <NavLink href="/category/accessories">Accessories</NavLink>
+            <NavLink href="/addProduct">Add Product</NavLink>
             <NavLink href="/about">About</NavLink>
           </nav>
 

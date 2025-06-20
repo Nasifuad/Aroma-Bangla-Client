@@ -11,7 +11,7 @@ interface Product {
   name: string;
   price: number;
   image_small: string;
-  discount?: number;
+  discount: number;
   category?: string;
   brand?: string;
   description?: string;
@@ -54,9 +54,31 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         </Link>
 
         <div className="flex items-center justify-between">
-          <span className="text-xl font-bold text-gray-900">
+          {/* <span className="text-xl font-bold text-gray-900">
             {product.price.toFixed(2)}/-
           </span>
+          {product.discount > 0 && (
+            <span className="text-sm text-red-500 line-through">
+              {(product.price * (1 - product.discount / 100)).toFixed(2)}/-
+            </span>
+          )} */}
+          {product.discount > 0 ? (
+            <div className="flex items-center gap-2">
+              {/* Original price with line-through */}
+              <span className="text-sm text-red-500 line-through">
+                {product.price.toFixed(2)}/-
+              </span>
+              {/* Discounted price */}
+              <span className="text-xl font-bold text-green-600">
+                {(product.price * (1 - product.discount / 100)).toFixed(2)}/-
+              </span>
+            </div>
+          ) : (
+            <span className="text-xl font-bold text-gray-900">
+              {product.price.toFixed(2)}/-
+            </span>
+          )}
+
           <div className="flex items-center space-x-1">
             {[...Array(5)].map((_, i) => (
               <svg

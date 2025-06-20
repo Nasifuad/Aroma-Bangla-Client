@@ -1,27 +1,23 @@
-import Footer from "@/components/ui/footer";
-import BestSeller from "@/app/components/Products/best-seller";
 import React from "react";
+import TopFilters from "../components/filter";
+import SideFilters from "../components/sideFilter";
+import ProductList from "../components/Products/Product";
 
-const Product = () => {
+const ProductPage = () => {
   return (
-    <>
-      <section className="bg-white py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
-            Featured Products
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {/* Featured products will be added here */}
-            <p className="text-center text-gray-600">
-              Featured products coming soon!
-            </p>
-          </div>
-        </div>
-        <BestSeller />
-        <Footer />
-      </section>
-    </>
+    <div className="flex flex-col md:flex-row gap-4 p-4">
+      {/* Sidebar (Left) */}
+      <aside className="w-full md:w-64">
+        <SideFilters />
+      </aside>
+
+      {/* Main Content (Right) */}
+      <main className="flex-1">
+        <TopFilters />
+        <ProductList />
+      </main>
+    </div>
   );
 };
 
-export default Product;
+export default ProductPage;

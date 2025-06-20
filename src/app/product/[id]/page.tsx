@@ -1,35 +1,22 @@
+// app/product/[id]/page.tsx
+
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { use, useEffect } from "react";
 import { useProductStore } from "@/store/useProductStore";
 import ProductDetails from "./details/page";
-import React from "react"; // Import React for React.use()
 
-function ProductEntry({
-  params: paramsPromise,
+export default function ProductEntry({
+  params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const params = React.use(paramsPromise); // Unwrap the params Promise
-  const { getProductById } = useProductStore();
-  const router = useRouter();
-  const { id } = params; // Access id from the unwrapped params
+  const { getProductById } = useProductStore((s) => s);
+  const { id } = use(params); // 👈 unwrap async params
 
   useEffect(() => {
-    const fetchAndRedirect = async () => {
-      await getProductById(id);
-      router.push(`/product/${id}/details`);
-    };
+    getProductById(id);
+  }, [id, getProductById]);
 
-    fetchAndRedirect();
-  }, [id, getProductById, router]);
-
-  return (
-    <>
-      <ProductDetails />
-    </>
-  );
+  return <ProductDetails />;
 }
-
-export default ProductEntry;

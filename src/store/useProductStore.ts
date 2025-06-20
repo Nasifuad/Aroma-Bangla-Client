@@ -9,6 +9,15 @@ export const useProductStore = create<ProductStore>((set) => ({
   cartItems: [],
   cartCount: 0,
   isFetching: false,
+  filters: {
+    minPrice: 0,
+    maxPrice: 0,
+    priceRange: "",
+    category: "",
+    brand: "",
+    sort: "",
+    sortby: "Newest",
+  },
   setProducts: (products) => set({ products }),
   getProduct: async () => {
     try {
@@ -16,6 +25,7 @@ export const useProductStore = create<ProductStore>((set) => ({
       const response = await fetch(`${apiUrl}/getProducts`);
       const data = await response.json();
       set({ products: data.data, isFetching: false });
+      console.log("Fetched products:", data);
     } catch (error) {
       console.log(error);
       set({ isFetching: false });
@@ -23,11 +33,11 @@ export const useProductStore = create<ProductStore>((set) => ({
   },
   getProductById: async (id: string) => {
     try {
-      set({ isFetching: true });
+      set({ isFetching: true, specificProduct: undefined });
       const response = await fetch(`${apiUrl}/${id}`);
       const data = await response.json();
-      console.log("Fetched product by ID:", data);
-      set({ specificProduct: data.data, isFetching: false });
+      console.log("Fetched produ  ct by ID:", data);
+      set({ specificProduct: data, isFetching: false });
     } catch (error) {
       console.log(error);
       set({ isFetching: false });
@@ -78,14 +88,13 @@ export const useProductStore = create<ProductStore>((set) => ({
     try {
       const formData = new FormData();
       console.log("Adding product with data:", product);
-      // Add text fields
+
       Object.entries(product).forEach(([key, value]) => {
         if (key !== "image_small" && key !== "image_big") {
           formData.append(key, value);
         }
       });
 
-      // Add image files
       product.image_small.forEach((file) =>
         formData.append("image_small", file)
       );
@@ -102,4 +111,25 @@ export const useProductStore = create<ProductStore>((set) => ({
       console.error("❌ Error adding product:", error);
     }
   },
+
+  setFilter: (name, value) =>
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        [name]: value,
+      },
+    })),
+
+  clearFilters: () =>
+    set(() => ({
+      filters: {
+        minPrice: 0,
+        maxPrice: 0,
+        priceRange: "",
+        category: "",
+        brand: "",
+        sort: "",
+        sortby: "Newest",
+      },
+    })),
 }));

@@ -13,7 +13,6 @@ const HeroSection: React.FC = () => {
         loop
         muted
         playsInline
-        poster="/images/hero-coffee.jpg"
       />
 
       <div className="relative z-20 flex flex-col items-center justify-center h-full px-4 text-center">

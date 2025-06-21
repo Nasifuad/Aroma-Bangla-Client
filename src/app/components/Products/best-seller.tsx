@@ -6,16 +6,8 @@ import { CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  image_small: string;
-  discount: number;
-  category?: string;
-  brand?: string;
-  description?: string;
-}
+// Remove local Product interface and import the correct one from your store interface
+import type { Product } from "@/store/interface";
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const [quantity, setQuantity] = React.useState(1);

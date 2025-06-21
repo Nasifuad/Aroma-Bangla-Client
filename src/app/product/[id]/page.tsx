@@ -11,7 +11,7 @@ export default function ProductEntry({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { getProductById } = useProductStore((s) => s);
+  const { getProductById } = useProductStore();
   const { id } = use(params); // 👈 unwrap async params
 
   useEffect(() => {

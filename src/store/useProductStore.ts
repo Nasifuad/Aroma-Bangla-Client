@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { ProductStore, NewProductInput } from "./interface";
 
-const apiUrl = "http://localhost:3030/api/product";
+const apiUrl = "https://yelp-khoh.onrender.com/api/product";
 
 export const useProductStore = create<ProductStore>((set) => ({
   products: [],
@@ -33,7 +33,7 @@ export const useProductStore = create<ProductStore>((set) => ({
   },
   getProductById: async (id: string) => {
     try {
-      set({ isFetching: true, specificProduct: undefined });
+      set({ isFetching: true });
       const response = await fetch(`${apiUrl}/${id}`);
       const data = await response.json();
       console.log("Fetched produ  ct by ID:", data);

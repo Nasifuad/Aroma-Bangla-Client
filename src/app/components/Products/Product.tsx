@@ -1,22 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useProductStore } from "@/store/useProductStore";
 
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  discount: number;
-  image_small: string;
-  category: string;
-  brand: string;
-  rating: number; // Added to match the store/interface Product type
-}
+import type { Product } from "@/store/interface";
 
 const ProductCard = ({ product }: { product: Product }) => {
   const { addToCart } = useProductStore();
   // const [quantity, setQuantity] = React.useState(1);
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const handleAddToCart = (product: Product, quantity: number) => {
+    addToCart(product, quantity);
+    setIsAddedToCart(true);
+  };
 
   return (
     <div className="bg-white rounded-lg overflow-hidden transition-all hover:shadow-sm border border-gray-100">
@@ -61,10 +57,17 @@ const ProductCard = ({ product }: { product: Product }) => {
       <div className="px-4 pb-4">
         <div className="flex items-center justify-between">
           <button
-            onClick={() => addToCart(product, 1)}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            onClick={() => handleAddToCart(product, 1)}
+            className={`px-8 py-3 rounded-md font-medium transition-colors ${
+              isAddedToCart
+                ? "bg-green-600 hover:bg-green-700 text-white"
+                : product.quantity > 0
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-gray-400 cursor-not-allowed text-white"
+            }`}
           >
-            Add to Cart
+            {isAddedToCart ? "Added to Cart" : "Add to Cart"}
+            {product.quantity <= 0 && " (Out of Stock)"}
           </button>
         </div>
       </div>

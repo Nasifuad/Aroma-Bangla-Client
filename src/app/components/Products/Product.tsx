@@ -2,20 +2,27 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import { useProductStore } from "@/store/useProductStore";
-
+import { useUIStore } from "@/store/uiStore"; // ✅ Added for dark mode
 import type { Product } from "@/store/interface";
 
 const ProductCard = ({ product }: { product: Product }) => {
   const { addToCart } = useProductStore();
-  // const [quantity, setQuantity] = React.useState(1);
+  const isDarkMode = useUIStore((state) => state.isDarkMode); // ✅
   const [isAddedToCart, setIsAddedToCart] = useState(false);
+
   const handleAddToCart = (product: Product, quantity: number) => {
     addToCart(product, quantity);
     setIsAddedToCart(true);
   };
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden transition-all hover:shadow-sm border border-gray-100">
+    <div
+      className={`rounded-lg overflow-hidden transition-all border ${
+        isDarkMode
+          ? "bg-gray-800 border-gray-700 hover:shadow-md"
+          : "bg-white border-gray-100 hover:shadow-sm"
+      }`}
+    >
       <div className="relative aspect-square">
         <img
           src={product.image_small}
@@ -30,7 +37,11 @@ const ProductCard = ({ product }: { product: Product }) => {
       </div>
 
       <div className="p-4 space-y-3">
-        <h3 className="font-medium text-gray-800 line-clamp-2">
+        <h3
+          className={`font-medium line-clamp-2 ${
+            isDarkMode ? "text-gray-100" : "text-gray-800"
+          }`}
+        >
           {product.name}
         </h3>
 
@@ -38,7 +49,11 @@ const ProductCard = ({ product }: { product: Product }) => {
           <div className="flex flex-col">
             {product.discount > 0 ? (
               <>
-                <span className="text-lg font-bold text-gray-900">
+                <span
+                  className={`text-lg font-bold ${
+                    isDarkMode ? "text-white" : "text-gray-900"
+                  }`}
+                >
                   ৳{(product.price * (1 - product.discount / 100)).toFixed(2)}
                 </span>
                 <span className="text-xs text-gray-500 line-through">
@@ -46,7 +61,11 @@ const ProductCard = ({ product }: { product: Product }) => {
                 </span>
               </>
             ) : (
-              <span className="text-lg font-bold text-gray-900">
+              <span
+                className={`text-lg font-bold ${
+                  isDarkMode ? "text-white" : "text-gray-900"
+                }`}
+              >
                 ৳{product.price.toFixed(2)}
               </span>
             )}
@@ -77,49 +96,34 @@ const ProductCard = ({ product }: { product: Product }) => {
 
 const ProductList = () => {
   const { products, getProduct, filters } = useProductStore();
-  const [isLoading, setIsLoading] = React.useState(true);
+  const isDarkMode = useUIStore((state) => state.isDarkMode); // ✅
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getProduct().then(() => setIsLoading(false));
   }, [getProduct]);
 
-  // Filter products according to filters in the store
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
-    console.log("Filters in ProductList:", filters);
-    console.log("Filters in ProductList:2", filtered);
-    // Filter by price range
-    console.log("price range:", filters.maxPrice);
-    if (filters.minPrice || filters.maxPrice) {
-      if (filters.maxPrice < 500) {
-        filtered = filtered.filter((p) => p.price < 500);
-      } else if (filters.maxPrice >= 500 && filters.maxPrice < 1000) {
-        filtered = filtered.filter((p) => p.price >= 500 && p.price < 1000);
-      } else if (filters.maxPrice >= 1000) {
-        filtered = filtered.filter((p) => p.price >= 1000);
-      } else {
-        filtered = filtered.filter((p) => p);
-      }
-    } else {
-      return filtered; // No price filter applied
+
+    if (filters.minPrice !== 0 || filters.maxPrice !== 0) {
+      const min = filters.minPrice || 0;
+      const max = filters.maxPrice || Infinity;
+      filtered = filtered.filter((p) => p.price >= min && p.price <= max);
     }
 
-    // Filter by brand
-    console.log("brand:", filters.brand);
     if (filters.brand) {
       filtered = filtered.filter(
         (p) => p.brand?.toLowerCase() === filters.brand.toLowerCase()
       );
     }
 
-    // Filter by category/type
     if (filters.category) {
       filtered = filtered.filter(
         (p) => p.category?.toLowerCase() === filters.category.toLowerCase()
       );
     }
 
-    // Sorting
     switch (filters.sortby) {
       case "Price: High to Low":
         filtered.sort((a, b) => b.price - a.price);
@@ -128,13 +132,15 @@ const ProductList = () => {
         filtered.sort((a, b) => a.price - b.price);
         break;
       case "Best Rated":
-        // Assuming product has a rating field
         filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case "Newest":
+        filtered.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        break;
       default:
-        // If you have createdAt or similar, sort by date desc
-        // filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         break;
     }
 
@@ -143,15 +149,36 @@ const ProductList = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 bg-black">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="bg-white rounded-lg overflow-hidden">
-              <div className="aspect-square bg-gray-100 animate-pulse" />
+            <div
+              key={i}
+              className={`rounded-lg overflow-hidden ${
+                isDarkMode ? "bg-gray-800" : "bg-white"
+              }`}
+            >
+              <div
+                className={`aspect-square animate-pulse ${
+                  isDarkMode ? "bg-gray-700" : "bg-gray-100"
+                }`}
+              />
               <div className="p-4 space-y-4">
-                <div className="h-4 bg-gray-100 rounded animate-pulse" />
-                <div className="h-4 w-3/4 bg-gray-100 rounded animate-pulse" />
-                <div className="h-6 w-1/2 bg-gray-100 rounded animate-pulse" />
+                <div
+                  className={`h-4 rounded animate-pulse ${
+                    isDarkMode ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                />
+                <div
+                  className={`h-4 w-3/4 rounded animate-pulse ${
+                    isDarkMode ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                />
+                <div
+                  className={`h-6 w-1/2 rounded animate-pulse ${
+                    isDarkMode ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                />
               </div>
             </div>
           ))}
@@ -162,7 +189,11 @@ const ProductList = () => {
 
   if (!filteredProducts.length) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8 text-center text-gray-500">
+      <div
+        className={`max-w-7xl mx-auto px-4 py-8 text-center ${
+          isDarkMode ? "text-gray-400" : "text-gray-500"
+        }`}
+      >
         No products found with the selected filters.
       </div>
     );
@@ -178,15 +209,5 @@ const ProductList = () => {
     </div>
   );
 };
-// ""
 
 export default ProductList;
-// import React from "react";
-// import { useProductStore } from "@/store/useProductStore";
-// const ProdcutList = () => {
-//   const { filters } = useProductStore();
-//   console.log("Filters in ProductList:", filters);
-//   return <div>allo</div>;
-// };
-
-// export default ProdcutList;

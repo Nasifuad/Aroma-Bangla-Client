@@ -22,7 +22,6 @@ interface CartProps {
 const Cart: React.FC<CartProps> = ({ isOpen, setIsOpen }) => {
   const { cartItems, removeFromCart, incrementCartItem, decrementCartItem } =
     useProductStore();
-  console.log("Cart items:", cartItems);
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cartItems

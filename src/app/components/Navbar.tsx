@@ -13,7 +13,6 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isCartOpen, setIsCartOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
-  // const [isDarkMode, setIsDarkMode] = React.useState(false);
   const { cartItems } = useProductStore();
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -24,9 +23,6 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Toggle dark mode
-  // const toggleDarkMode = () => setIsDarkMode((prev) => !prev);
 
   return (
     <header

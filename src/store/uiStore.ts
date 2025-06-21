@@ -1,22 +1,11 @@
 import { create } from "zustand";
 
-interface UIDarkModeState {
+interface UIState {
   isDarkMode: boolean;
-}
-
-interface UIToggleDarkModeAction {
   toggleDarkMode: () => void;
 }
 
-export const useUIStore = create<UIDarkModeState & UIToggleDarkModeAction>(
-  (
-    set: (
-      fn: (
-        state: UIDarkModeState & UIToggleDarkModeAction
-      ) => Partial<UIDarkModeState>
-    ) => void
-  ) => ({
-    isDarkMode: false,
-    toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
-  })
-);
+export const useUIStore = create<UIState>((set) => ({
+  isDarkMode: false,
+  toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
+}));

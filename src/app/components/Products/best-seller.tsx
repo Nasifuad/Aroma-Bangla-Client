@@ -5,13 +5,14 @@ import { useProductStore } from "@/store/useProductStore";
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useUIStore } from "@/store/uiStore";
 
-// Remove local Product interface and import the correct one from your store interface
 import type { Product } from "@/store/interface";
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const [quantity, setQuantity] = React.useState(1);
   const { addToCart } = useProductStore();
+  const { isDarkMode } = useUIStore();
 
   const increment = () => setQuantity((prev) => prev + 1);
   const decrement = () => setQuantity((prev) => Math.max(1, prev - 1));
@@ -21,7 +22,13 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   };
 
   return (
-    <div className="group rounded-2xl border border-gray-100 bg-white overflow-hidden transition-all hover:shadow-md">
+    <div
+      className={`group rounded-2xl border overflow-hidden transition-all hover:shadow-md ${
+        isDarkMode
+          ? "border-gray-700 bg-gray-900 hover:shadow-gray-800"
+          : "border-gray-100 bg-white"
+      }`}
+    >
       <Link href={`/product/${product._id}`} className="block">
         <div className="relative aspect-square overflow-hidden">
           <img
@@ -30,7 +37,11 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           {product.category && (
-            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
+            <div
+              className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${
+                isDarkMode ? "bg-gray-800/90 text-gray-100" : "bg-white/90"
+              }`}
+            >
               {product.category}
             </div>
           )}
@@ -40,33 +51,35 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
       <CardContent className="p-4 space-y-3">
         <Link
           href={`/product/${product._id}`}
-          className="block text-lg font-medium text-gray-900 hover:text-indigo-600 transition-colors line-clamp-2"
+          className={`block text-lg font-medium transition-colors line-clamp-2 ${
+            isDarkMode
+              ? "text-gray-100 hover:text-indigo-400"
+              : "text-gray-900 hover:text-indigo-600"
+          }`}
         >
           {product.name}
         </Link>
 
         <div className="flex items-center justify-between">
-          {/* <span className="text-xl font-bold text-gray-900">
-            {product.price.toFixed(2)}/-
-          </span>
-          {product.discount > 0 && (
-            <span className="text-sm text-red-500 line-through">
-              {(product.price * (1 - product.discount / 100)).toFixed(2)}/-
-            </span>
-          )} */}
           {product.discount > 0 ? (
             <div className="flex items-center gap-2">
-              {/* Original price with line-through */}
               <span className="text-sm text-red-500 line-through">
                 {product.price.toFixed(2)}/-
               </span>
-              {/* Discounted price */}
-              <span className="text-xl font-bold text-green-600">
+              <span
+                className={`text-xl font-bold ${
+                  isDarkMode ? "text-green-400" : "text-green-600"
+                }`}
+              >
                 {(product.price * (1 - product.discount / 100)).toFixed(2)}/-
               </span>
             </div>
           ) : (
-            <span className="text-xl font-bold text-gray-900">
+            <span
+              className={`text-xl font-bold ${
+                isDarkMode ? "text-gray-100" : "text-gray-900"
+              }`}
+            >
               {product.price.toFixed(2)}/-
             </span>
           )}
@@ -87,20 +100,34 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         </div>
       </CardContent>
 
-      <CardFooter className="p-4 border-t border-gray-100">
+      <CardFooter
+        className={`p-4 border-t ${
+          isDarkMode ? "border-gray-700" : "border-gray-100"
+        }`}
+      >
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-center border border-gray-200 rounded-full">
+          <div className="flex items-center border rounded-full overflow-hidden">
             <button
               onClick={decrement}
-              className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-l-full"
+              className={`w-8 h-8 flex items-center justify-center hover:bg-gray-100 ${
+                isDarkMode ? "text-gray-300 hover:bg-gray-800" : "text-gray-500"
+              }`}
               aria-label="Decrease quantity"
             >
               -
             </button>
-            <span className="px-2 font-medium">{quantity}</span>
+            <span
+              className={`px-2 font-medium ${
+                isDarkMode ? "text-gray-100" : "text-gray-800"
+              }`}
+            >
+              {quantity}
+            </span>
             <button
               onClick={increment}
-              className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-r-full"
+              className={`w-8 h-8 flex items-center justify-center hover:bg-gray-100 ${
+                isDarkMode ? "text-gray-300 hover:bg-gray-800" : "text-gray-500"
+              }`}
               aria-label="Increase quantity"
             >
               +
@@ -109,7 +136,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
           <Button
             onClick={handleAddToCart}
-            className="bg-indigo-600 hover:bg-indigo-700 rounded-full px-4 py-2"
+            className="bg-indigo-600 hover:bg-indigo-700 rounded-full px-4 py-2 text-white"
           >
             Add to Cart
           </Button>
@@ -121,6 +148,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
 const BestSeller: React.FC = () => {
   const { products, getProduct } = useProductStore();
+  const { isDarkMode } = useUIStore();
   const [isLoading, setIsLoading] = React.useState(true);
 
   useEffect(() => {
@@ -133,7 +161,9 @@ const BestSeller: React.FC = () => {
 
   if (isLoading) {
     return (
-      <section className="bg-gray-50 py-20">
+      <section
+        className={isDarkMode ? "bg-gray-900 py-20" : "bg-gray-50 py-20"}
+      >
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <div className="h-10 bg-gray-200 rounded-full w-1/3 mx-auto mb-6"></div>
@@ -143,7 +173,11 @@ const BestSeller: React.FC = () => {
             {[...Array(4)].map((_, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
+                className={`rounded-2xl overflow-hidden ${
+                  isDarkMode
+                    ? "bg-gray-800 border border-gray-700"
+                    : "bg-white border border-gray-100"
+                }`}
               >
                 <div className="aspect-square bg-gray-200 animate-pulse"></div>
                 <div className="p-4 space-y-4">
@@ -160,13 +194,21 @@ const BestSeller: React.FC = () => {
   }
 
   return (
-    <section className="bg-gray-50 py-20">
+    <section className={isDarkMode ? "bg-gray-900 py-20" : "bg-gray-50 py-20"}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2
+            className={`text-4xl font-bold mb-4 ${
+              isDarkMode ? "text-gray-100" : "text-gray-900"
+            }`}
+          >
             Premium Selection
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p
+            className={`max-w-2xl mx-auto ${
+              isDarkMode ? "text-gray-400" : "text-gray-600"
+            }`}
+          >
             Discover our most sought-after products, curated for exceptional
             quality
           </p>
@@ -182,7 +224,11 @@ const BestSeller: React.FC = () => {
           <Link href="/products">
             <Button
               variant="outline"
-              className="border-indigo-600 text-indigo-600 hover:bg-indigo-50 rounded-full px-8 py-6"
+              className={`rounded-full px-8 py-6 ${
+                isDarkMode
+                  ? "border-indigo-400 text-indigo-400 hover:bg-gray-800"
+                  : "border-indigo-600 text-indigo-600 hover:bg-indigo-50"
+              }`}
             >
               View All Products
             </Button>

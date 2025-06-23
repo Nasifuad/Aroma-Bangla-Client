@@ -19,13 +19,13 @@ const HeroSection: React.FC = () => {
       />
 
       {/* Dark overlay to enhance contrast */}
-      <div
+      {/* <div
         className={`absolute top-0 left-0 w-full h-full z-10 ${
           isDarkMode
             ? "bg-black/60 backdrop-blur-sm"
             : "bg-white/30 backdrop-blur-sm"
         }`}
-      />
+      /> */}
 
       {/* Content */}
       <div className="relative z-20 flex flex-col items-center justify-center h-full px-4 text-center">

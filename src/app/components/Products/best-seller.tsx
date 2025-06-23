@@ -221,7 +221,7 @@ const BestSeller: React.FC = () => {
         </div>
 
         <div className="text-center mt-16">
-          <Link href="/products">
+          <Link href="/product">
             <Button
               variant="outline"
               className={`rounded-full px-8 py-6 ${
